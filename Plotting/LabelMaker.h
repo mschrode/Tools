@@ -6,7 +6,7 @@
 #include "TPaveText.h"
 #include "TString.h"
 
-#include "/afs/desy.de/user/m/matsch/Tools/Plotting/TheLooks.h"
+#include "Tools/Plotting/TheLooks.h"
 
 class LabelMaker {
 public:
@@ -35,6 +35,32 @@ public:
   }
 
 
+  // Returns a TLeged object that fits into the top-right corner
+  // of the current pad and that can be used for additional labels.
+  // Its width, relative to the pad size (without margins), can be
+  // specified. Its height is optimized for nEntries entries.
+  static TLegend* legend(const int nEntries, const double relWidth=0.5) {
+    return legendTR(nEntries,relWidth);
+  }
+
+  static TLegend* legend(TString position, const int nEntries, const double relWidth=0.5);
+
+  // Same but explicitly state position on pad
+  static TLegend* legendTL(const int nEntries, const double relWidth=0.5) {
+    return legend(nEntries,relWidth,true,true);
+  }
+  static TLegend* legendTR(const int nEntries, const double relWidth=0.5) {
+    return legend(nEntries,relWidth,false,true);
+  }
+  static TLegend* legendBL(const int nEntries, const double relWidth=0.5) {
+    return legend(nEntries,relWidth,true,false);
+  }
+  static TLegend* legendBR(const int nEntries, const double relWidth=0.5) {
+    return legend(nEntries,relWidth,false,false);
+  }
+
+
+private:
   // NDC coordinates for TPave, TLegend,...
   static void setXCoordinatesL(const double relWidth, double& x0, double& x1);
   static void setXCoordinatesR(const double relWidth, double& x0, double& x1);
@@ -42,6 +68,7 @@ public:
   static void setYCoordinatesB(const int nEntries, double& y0, double& y1);
 
   static TPaveText* label(const int nEntries, const double relWidth, const bool leftt, const bool top);
+  static TLegend* legend(const int nEntries, const double relWidth, const bool leftt, const bool top);
 };
 
 
@@ -66,6 +93,30 @@ TPaveText* LabelMaker::label(TString position, const int nEntries, const double 
   }
   
   return label;
+}
+
+
+// --------------------------------------------------------------
+TLegend* LabelMaker::legend(TString position, const int nEntries, const double relWidth) {
+  position.ToLower();
+  if( !( position.Contains("top") || position.Contains("bottom") ) )
+    position += "top";
+  if( !( position.Contains("left") || position.Contains("right") ) )
+    position += "right";
+  TLegend* legend = 0;
+  if(        position.Contains("top")    && position.Contains("right") ) {
+    legend = legendTR(nEntries,relWidth);
+  } else if( position.Contains("top")    && position.Contains("left")  ) {
+    legend = legendTL(nEntries,relWidth);
+  } else if( position.Contains("bottom") && position.Contains("right") ) {
+    legend = legendBR(nEntries,relWidth);
+  } else if( position.Contains("bottom") && position.Contains("left")  ) {
+    legend = legendBL(nEntries,relWidth);
+  } else {
+    legend = legendTR(nEntries,relWidth);
+  }
+  
+  return legend;
 }
 
 
@@ -118,6 +169,28 @@ TPaveText* LabelMaker::label(const int nEntries, const double relWidth, const bo
   label->SetMargin(0.);
 
   return label;
+}
+
+
+// --------------------------------------------------------------
+TLegend* LabelMaker::legend(const int nEntries, const double relWidth, const bool left, const bool top) {
+  double x0 = 0.;
+  double x1 = 0.;
+  double y0 = 0.;
+  double y1 = 0.;
+  if( left ) setXCoordinatesL(relWidth,x0,x1);
+  else       setXCoordinatesR(relWidth,x0,x1);
+  if( top  ) setYCoordinatesT(nEntries,y0,y1);
+  else       setYCoordinatesB(nEntries,y0,y1);
+
+  TLegend* leg = new TLegend(x0,y0,x1,y1);
+  leg->SetBorderSize(0);
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  leg->SetTextFont(42);
+  leg->SetTextSize(TheLooks::textSize());
+
+  return leg;
 }
 
 
