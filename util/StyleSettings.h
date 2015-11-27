@@ -8,8 +8,6 @@
 #include "TString.h"
 #include "TStyle.h"
 
-#include "utils.h"
-
 
 namespace util {
 
@@ -58,31 +56,6 @@ namespace util {
     // Retrieve some style attributes to be used in
     // user code. Their value depends on the current
     // global style settings:
-
-    // Get a histogram title string for CMS PAS style
-    static TString title(double lumi, bool isPreliminary = false) {
-      TString title = "CMS";
-      if( isPreliminary ) title += " preliminary";
-      title += ", L = "+luminosity(lumi)+",  #sqrt{s} = 7 TeV";
-      
-      return title;
-    }
-
-    // This needs the lumi in 1/pb and returns
-    // a nicely formatted TString
-    static TString luminosity(double lumi) {
-      TString lab = "";
-      if( lumi > 900. ) {
-	lumi /= 1000.;
-	lab = toTString(lumi,2)+" fb^{-1}";
-      } else if( lumi > 100. ) {
-	lab = toTString(lumi,0)+" pb^{-1}";
-      } else {
-	lab = toTString(lumi,3)+" pb^{-1}";
-      }
-
-      return lab;
-    }
 
     // Return a readable color; useful for loops
     static int color(int i) {
