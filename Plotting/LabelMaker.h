@@ -10,6 +10,10 @@
 
 class LabelMaker {
 public:
+  // text as specified
+  static TPaveText* title(const TString& title);
+
+
   // Returns a TPaveText object that fits into the top-right corner
   // of the current pad and that can be used for additional labels.
   // Its width, relative to the pad size (without margins), can be
@@ -69,7 +73,21 @@ private:
 
   static TPaveText* label(const int nEntries, const double relWidth, const bool leftt, const bool top);
   static TLegend* legend(const int nEntries, const double relWidth, const bool leftt, const bool top);
+  static TPaveText* tPaveText(const double x0, const double y0, const double x1, const double y1, const double textSize);
 };
+
+
+// --------------------------------------------------------------
+TPaveText* LabelMaker::title(const TString &title) {
+  double x0 = gStyle->GetPadLeftMargin();
+  double x1 = 1.-gStyle->GetPadRightMargin();
+  double y0 = 1.-gStyle->GetPadTopMargin()+0.01;
+  double y1 = 1.;
+  TPaveText *header = LabelMaker::tPaveText(x0,y0,x1,y1,0.044);
+  header->AddText(title);
+  
+  return header;
+}
 
 
 // --------------------------------------------------------------
@@ -192,6 +210,20 @@ TLegend* LabelMaker::legend(const int nEntries, const double relWidth, const boo
 
   return leg;
 }
+
+
+// --------------------------------------------------------------
+TPaveText* LabelMaker::tPaveText(const double x0, const double y0, const double x1, const double y1, const double textSize) {
+  TPaveText *txt = new TPaveText(x0,y0,x1,y1,"NDC");
+  txt->SetBorderSize(0);
+  txt->SetFillColor(0);
+  txt->SetTextFont(42);
+  txt->SetTextAlign(12);	// left adjusted and vertically centered
+  txt->SetTextSize(textSize);
+  txt->SetMargin(0.);
+  
+  return txt;
+}  
 
 
 #endif
