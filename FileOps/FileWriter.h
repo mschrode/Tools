@@ -22,6 +22,8 @@ TString FileWriter::toFileName(const TString& name) {
   TString fileName(name);
   fileName.ReplaceAll(" ","_");
   fileName.ReplaceAll("__","_");
+  fileName.ReplaceAll("(","");
+  fileName.ReplaceAll(")","");
 
   return fileName;
 }

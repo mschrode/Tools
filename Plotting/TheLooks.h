@@ -17,6 +17,7 @@
 #ifndef TOOLS_PLOTTING_THELOOKS_H
 #define TOOLS_PLOTTING_THELOOKS_H
 
+#include "TCanvas.h"
 #include "TColor.h"
 #include "TError.h"
 #include "TString.h"
@@ -49,6 +50,8 @@ public:
   static double lineHeight() { return lineHeight_; }
   static double textSize() { return textSize_; }
 
+  static void applyTH2Margins(TCanvas* can);
+
 
 private:
   static PublicationStatus publicationStatus_;
@@ -61,6 +64,14 @@ PublicationStatus TheLooks::publicationStatus_ = INTERNAL;
 double TheLooks::lineHeight_ = 0.046;
 double TheLooks::margin_ = 0.05;
 double TheLooks::textSize_ = 0.04;
+
+
+// --------------------------------------------------------------
+void TheLooks::applyTH2Margins(TCanvas* can) {
+  can->SetRightMargin(can->GetRightMargin()+0.08);
+  can->SetBottomMargin(can->GetBottomMargin()+0.06);
+  can->SetTopMargin(can->GetTopMargin()+0.02);
+}
 
 
 // --------------------------------------------------------------
